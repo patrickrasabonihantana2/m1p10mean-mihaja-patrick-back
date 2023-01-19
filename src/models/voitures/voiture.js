@@ -7,4 +7,4 @@ class Voiture {
   }
 }
 
-module.exports = SessionReparation;
+module.exports = Voiture;

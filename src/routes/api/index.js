@@ -1,6 +1,7 @@
 var express = require('express');
 const Env = require('../../util/env');
 const MongoConnect = require('../../dao/MongoConnect');
+const { createCollections } = require('../../config/create-collection');
 var router = express.Router();
 
 router.get('/', async function(req, res, next) {
@@ -9,6 +10,8 @@ router.get('/', async function(req, res, next) {
   try {
     mongoClient = await mongoConnect.getConnection();
     let db = mongoClient.db('garage_test');
+
+    await createCollections(db);
 
     let usersCollection = db.collection('users');
     let users = await usersCollection.find({}).toArray();
