@@ -8,8 +8,14 @@ router.get('/', async function(req, res, next) {
   let mongoClient = undefined;
   try {
     mongoClient = await mongoConnect.getConnection();
-    let collection = mongoClient.db('garage_test').collection('users');
-    let result = await collection.find({}).toArray();
+    let db = mongoClient.db('garage_test');
+
+    let usersCollection = db.collection('users');
+    let users = await usersCollection.find({}).toArray();
+
+    let result = {
+      users: users
+    };
     res.json(result);
   } catch(err) {
     throw err;

@@ -3,11 +3,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
-const Env = require('./util/env');
+const Env = require('./src/util/env');
 
-var indexRouter = require('./routes/index');
-var authRouter = require('./routes/auth/index');
-var apiRouter = require('./routes/api/index');
+var indexRouter = require('./src/routes/index');
+var authRouter = require('./src/routes/auth');
+var apiRouter = require('./src/routes/api');
 
 var app = express();
 
