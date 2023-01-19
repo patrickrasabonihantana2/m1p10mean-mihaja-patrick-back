@@ -1,7 +1,7 @@
 var express = require('express');
 const Env = require('../../util/env');
 const MongoConnect = require('../../dao/MongoConnect');
-const { createCollections } = require('../../config/create-collection');
+const { createCollections } = require('../../dao/create-collection');
 var router = express.Router();
 
 router.get('/', async function(req, res, next) {
