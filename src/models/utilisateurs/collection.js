@@ -34,8 +34,11 @@ const colletion = {
   },
   indexes: [
     {
-      indexInfo:{ "email": 1 },
+      indexInfo:{ "login.email": 1 },
       isUnique:true
+    },
+    {
+      indexInfo:{ "login.email": 1, "login.mdp": 1}
     }
   ]
 }
