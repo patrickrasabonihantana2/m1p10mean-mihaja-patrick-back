@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const {Db} = require('mongodb');
+const Utilisateur = require('./utilisateur');
 
 class UtilisateurLogin {
   #isCrypt = false;
@@ -29,12 +31,25 @@ class UtilisateurLogin {
   }
 
   /**
-   * cree un nouvel utilisateur
+   * recupere l'utilisateur
    * @param {Db} db database
-   * @return {Utilisateur} utilisateur correspondant
+   * @return {object} utilisateur correspondant
    */
   async getUtilisateur(db) {
-
+    let collection = db.collection('utilisateurs');
+    // await this.hashMdp();
+    let query = {
+      "login.email": this.email,
+      "login.mdp": this.mdp
+    };
+    let options = {
+      projection: {
+        login: 0
+      }
+    };
+    console.log(query);
+    let utilisateur = await collection.findOne(query, options);
+    return utilisateur;
   }
 }
 

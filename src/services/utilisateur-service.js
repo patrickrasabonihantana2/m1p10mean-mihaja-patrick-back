@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const MongoConnect = require('../dao/MongoConnect');
 const Env = require('../util/env');
-const {Utilisateur, UtilisateurLogin} = require('../models/utilisateurs');
+const {UtilisateurLogin} = require('../models/utilisateurs');
 
 class UtilisateurService {
   /**
@@ -9,15 +9,40 @@ class UtilisateurService {
    * @param {UtilisateurLogin} utilsateurLogin login
    * @return {object} utilisateur et token
    */
-  static login(utilsateurLogin) {
-    let utlisateur = utilsateurLogin.getUtilisateur(undefined);
+  static async login(utilsateurLogin) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
 
-    let data = {
-      utilisateur_id: utlisateur._id,
-    };
-    const tokenSecret = '';
-    let token = jwt.sign(data, tokenSecret);
-    return token;
+      let utilisateur = await utilsateurLogin.getUtilisateur(db);
+      console.log(utilisateur);
+
+      if(utilisateur == null) {
+        throw new Error('login ou mot de passe incorrect');
+      }
+
+      let data = {
+        utilisateur: {
+          _id: utilisateur._id,
+          role: utilisateur.role
+        }
+      };
+      let token = jwt.sign(data, Env.SECURITY_JWT_SECRET);
+
+      let result = {
+        token: token,
+        utilisateur: utilisateur
+      }
+      return result;
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**

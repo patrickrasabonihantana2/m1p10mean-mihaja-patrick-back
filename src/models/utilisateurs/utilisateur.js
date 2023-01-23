@@ -17,6 +17,7 @@ class Utilisateur {
   async save(db) {
     let colletion = db.collection('utilisateurs');
     try {
+      // await this.login.hashMdp();
       let result = await colletion.insertOne(this);
       return this;
     } catch(err) {
