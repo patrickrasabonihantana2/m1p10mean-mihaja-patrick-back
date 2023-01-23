@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const corsSecurity = require('./src/middlewares/cors');
+const tokenSecurity = require('./src/middlewares/token');
 
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth');
@@ -18,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use('/api', apiRouter);
+app.use('/api', tokenSecurity, apiRouter);
 
 // CORS
 app.use(corsSecurity);

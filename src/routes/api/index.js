@@ -11,7 +11,7 @@ router.get('/', async function(req, res, next) {
     mongoClient = await mongoConnect.getConnection();
     let db = mongoClient.db('garage_test');
 
-    await createCollections(db);
+    // await createCollections(db);
 
     let usersCollection = db.collection('users');
     let users = await usersCollection.find({}).toArray();
