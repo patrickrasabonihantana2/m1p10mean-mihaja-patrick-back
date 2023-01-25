@@ -2,12 +2,16 @@ const { Db } = require('mongodb');
 const utilisateurCollection = require('../models/utilisateurs').collection;
 const voitureCollection = require('../models/voitures').collection;
 const reparationCollection = require('../models/reparations').collection;
+const depenseCollection = require('../models/depenses').collection;
+const factureCollection = require('../models/factures').collection;
 
 //Listes des collections
 const collections = [
   utilisateurCollection,
   voitureCollection,
-  reparationCollection
+  reparationCollection,
+  depenseCollection,
+  factureCollection
 ]
 
 module.exports = {

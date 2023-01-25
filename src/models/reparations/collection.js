@@ -1,38 +1,79 @@
-const colletion = {
-  name: 'reparations',
+const collection = {
+  name: 'session_reparations',
   options: {
     validator: {
       $jsonSchema: {
         bsonType: 'object',
-        title: 'Collection Reparation',
-        required: ['session_reparation_id', 'description', 'montant'],
+        title: 'Reparations',
+        required: ['voiture_id', 'entree', 'etat'],
         properties: {
-          session_reparation_id: {
-            bsonType: "objectId"
+          voiture_id: {
+            bsonType: 'objectId'
           },
-          description: {
-            bsonType: "string"
+          entree: {
+            bsonType: 'date'
           },
-          montant: {
-            bsonType: "double",
-            minimum: 0
+          sortie: {
+            bsonType: 'date'
+          },
+          etat: {
+            bsonType: 'int'
           },
           evolutions: {
             bsonType: "array",
             items:  {
               bsonType: 'object',
+              required: ['date', 'etat'],
               properties: {
                 date: {
                     bsonType: "date"
                 },
+                etat: {
+                  bsonType: 'int'
+                },
+              }
+            }
+          },
+          reparations: {
+            bsonType: 'array',
+            items: {
+              bsonType: 'object',
+              required: ['description', 'montant', 'etat'],
+              properties: {
+                _id: {
+                  bsonType: 'objectId'
+                },
+                description: {
+                  bsonType: 'string'
+                },
+                montant: {
+                  bsonType: 'double'
+                },
+                etat: {
+                  bsonType: 'int'
+                },
+                evolutions: {
+                  bsonType: "array",
+                  items:  {
+                    bsonType: 'object',
+                    required: ['date', 'etat'],
+                    properties: {
+                      date: {
+                          bsonType: "date"
+                      },
+                      etat: {
+                        bsonType: 'int'
+                      },
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
     }
-  },
-  indexes: []
+  }
 }
 
-module.exports = colletion;
+module.exports = collection;
