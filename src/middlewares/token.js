@@ -3,7 +3,7 @@ const {Request, Response} = require('express');
 const Env = require('../util/env');
 
 /**
- * check le token
+ * verrifie le token
  * @param {Request} req
  * @param {Response} res
  * @param {*} next
