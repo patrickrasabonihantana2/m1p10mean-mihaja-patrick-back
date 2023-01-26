@@ -5,7 +5,7 @@ const colletion = {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Collection Voiture',
-        required: ['user_id', 'matricule', 'marque', 'modele'],
+        required: ['user_id', 'matricule', 'marque', 'modele', 'etat', 'evolutions'],
         properties: {
           user_id: {
             bsonType: "objectId"
@@ -19,16 +19,20 @@ const colletion = {
           modele: {
             bsonType: "string"
           },
-          sessions: {
+          etat: {
+            bsonType: 'int'
+          },
+          evolutions: {
             bsonType: "array",
             items:  {
               bsonType: 'object',
+              required: ['date', 'etat'],
               properties: {
-                entree: {
-                  bsonType: "date"
+                date: {
+                    bsonType: "date"
                 },
-                sortie: {
-                  bsonType: "date"
+                etat: {
+                  bsonType: 'int'
                 },
               }
             }

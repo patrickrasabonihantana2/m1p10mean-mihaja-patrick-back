@@ -4,30 +4,14 @@ const MongoConnect = require('../../dao/MongoConnect');
 const { createCollections } = require('../../dao/create-collection');
 var router = express.Router();
 
-router.get('/', async function(req, res, next) {
-  const mongoConnect = new MongoConnect();
-  let mongoClient = undefined;
-  try {
-    mongoClient = await mongoConnect.getConnection();
-    let db = mongoClient.db('garage_test');
+const voitureRouter = require('./voiture');
+const reparationRouter = require('./reparation');
+const depenseRouter = require('./depense');
+const statistiqueRouter = require('./statistique');
 
-    // await createCollections(db);
-
-    let usersCollection = db.collection('users');
-    let users = await usersCollection.find({}).toArray();
-
-    let result = {
-      users: users
-    };
-    res.json(result);
-  } catch(err) {
-    throw err;
-  } finally {
-    if(mongoClient) {
-      mongoClient.close();
-    }
-  }
-  console.log('MONGO_URL', Env.MONGO_URL);
-});
+router.use('/voiture', voitureRouter);
+router.use('/reparation', reparationRouter);
+router.use('/depense', depenseRouter);
+router.use('/statistique', statistiqueRouter);
 
 module.exports = router;

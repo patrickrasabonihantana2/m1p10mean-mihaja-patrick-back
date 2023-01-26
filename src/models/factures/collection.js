@@ -55,7 +55,8 @@ const collection = {
         }
       }
     }
-  }
+  },
+  indexes: []
 }
 
 module.exports = collection;

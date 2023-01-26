@@ -2,13 +2,32 @@ const {EtatVoiture} = require('../../constantes');
 const Evolution = require('../evolution');
 
 class Voiture {
-  constructor(user_id, matricule, marque, modele, etat = EtatVoiture.CREE) {
-    this.user_id = user_id;
-    this.matricule = matricule;
-    this.marque = marque;
-    this.modele = modele;
-    this.etat = etat;
-    this.evolutions = [new Evolution(this.etat)];
+  _id;
+  user_id;
+  matricule;
+  marque;
+  modele;
+  etat;
+  evolutions;
+
+  static newBlank(user_id, matricule, marque, modele, etat) {
+    let instance = new Voiture();
+    instance.user_id = user_id;
+    instance.matricule = matricule;
+    instance.marque = marque;
+    instance.modele = modele;
+    instance.etat = etat;
+    return instance;
+  }
+  static newCreate(user_id, matricule, marque, modele, etat = EtatVoiture.CREE) {
+    let instance = new Voiture();
+    instance.user_id = user_id;
+    instance.matricule = matricule;
+    instance.marque = marque;
+    instance.modele = modele;
+    instance.etat = etat;
+    instance.evolutions = [new Evolution(instance.etat)];
+    return instance;
   }
 }
 
