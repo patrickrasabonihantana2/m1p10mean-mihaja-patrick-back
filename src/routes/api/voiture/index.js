@@ -2,8 +2,12 @@ var express = require('express');
 var router = express.Router();
 const {ObjectId} = require('mongodb');
 
+const ReparationRouter = require('./reparation');
+
 const {Voiture} = require('../../../models/voitures');
 const VoitureService = require('../../../services/voiture-service');
+
+router.use('/:voiture_id', ReparationRouter);
 
 router.get('/', async function(req, res) {
   let params = req.query;

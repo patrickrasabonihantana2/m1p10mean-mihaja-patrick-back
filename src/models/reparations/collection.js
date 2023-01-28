@@ -14,7 +14,7 @@ const collection = {
             bsonType: 'date'
           },
           sortie: {
-            bsonType: 'date'
+            bsonType: ['null', 'string']
           },
           etat: {
             bsonType: 'int'
@@ -41,7 +41,7 @@ const collection = {
               required: ['description', 'montant', 'etat'],
               properties: {
                 _id: {
-                  bsonType: 'objectId'
+                  bsonType: 'objectId',
                 },
                 description: {
                   bsonType: 'string'
@@ -74,7 +74,11 @@ const collection = {
       }
     }
   },
-  indexes: []
+  indexes: [
+    {
+      indexInfo:{ "voiture_id": 1 }
+    }
+  ]
 }
 
 module.exports = collection;

@@ -1,3 +1,9 @@
+const {ObjectId} = require('mongodb');
+const MongoConnect = require('../dao/MongoConnect');
+const Env = require('../util/env');
+const {SessionReparation} = require('../models/reparations');
+const {EtatSessionReparation} = require('../constantes');
+
 class ReparationService {
   /**
    * recupere les voitures selon les criteres
@@ -19,10 +25,39 @@ class ReparationService {
 
   /**
    * ajoute une nouvelle session de reparations
+   * @param {SessionReparation} sessionReparation nouvelle session reparation
    * @return session de reparations
    */
-  static addSession() {
+  static async addSession(sessionReparations) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let query = {
+        "voiture_id": sessionReparations.voiture_id,
+        "etat": {
+          $lt: EtatSessionReparation.SORTIE
+        }
+      }
+      let existSession = await collection.find(query).toArray();
+
+      if(existSession.length > 0) {
+        throw new Error('cette voiture est actuellement dans le garage');
+      }
+
+      let result = await collection.insertOne(sessionReparations);
+      sessionReparations._id = result.insertedId;
+      return sessionReparations;
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**
@@ -30,8 +65,37 @@ class ReparationService {
    * @param {Voiture} voiture voiture avec nouveaux info
    * @return session de reparations
    */
-  static updateSession(sessionReparation) {
+  static async updateSession(sessionReparations) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let filter = {
+        _id: sessionReparations._id
+      };
+      let querySet = {};
+      for (const [key, value] of Object.entries(sessionReparations)) {
+        if(key != '_id' && value != undefined) {
+          querySet[key] = value;
+        }
+      }
+      let query = {
+        $set: querySet
+      };
+
+      await collection.updateOne(filter, query);
+      sessionReparations = await collection.find({_id: sessionReparations._id}).toArray();
+      return sessionReparations[0];
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**

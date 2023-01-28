@@ -6,6 +6,7 @@ class SessionReparation {
     this.voiture_id = voiture_id;
     this.entree = entree;
     this.sortie = sortie;
+    this.reparations = [];
     this.etat = etat;
     this.evolutions = [new Evolution(this.etat)];
   }
