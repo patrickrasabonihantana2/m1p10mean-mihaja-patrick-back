@@ -76,7 +76,7 @@ class Voitureervice {
       };
 
       let voitures = await collection.find(query).toArray();
-      return voitures;
+      return voitures[0];
     } catch(err) {
       throw err;
     } finally {

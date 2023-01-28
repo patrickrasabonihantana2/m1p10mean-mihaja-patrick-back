@@ -7,11 +7,34 @@ const {EtatSessionReparation} = require('../constantes');
 class ReparationService {
   /**
    * recupere les voitures selon les criteres
-   * @param {SessionReparation} sessionReparation criteres
+   * @param {SessionReparation} sessionReparations criteres
    * @return sessions de reparations
    */
-  static findSession(sessionReparation) {
+  static async findSession(sessionReparations) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let query = {};
+      for (const [key, value] of Object.entries(sessionReparations)) {
+        if(value != undefined && value !== []) {
+          query[key] = value;
+        }
+      }
+      console.log(query);
+
+      let sessionsReparations = await collection.find(query).toArray();
+      return sessionsReparations;
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**
@@ -19,13 +42,32 @@ class ReparationService {
    * @param {ObjectId} id
    * @return session de reparations
    */
-  static findSessionById(id) {
+  static async findSessionById(id) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let query = {
+        _id: id
+      };
+
+      let sessionsReparations = await collection.find(query).toArray();
+      return sessionsReparations[0];
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**
    * ajoute une nouvelle session de reparations
-   * @param {SessionReparation} sessionReparation nouvelle session reparation
+   * @param {SessionReparation} sessionReparations nouvelle session reparation
    * @return session de reparations
    */
   static async addSession(sessionReparations) {
@@ -62,7 +104,7 @@ class ReparationService {
 
   /**
    * met a jour une session de reparations
-   * @param {Voiture} voiture voiture avec nouveaux info
+   * @param {Voiture} sessionReparations voiture avec nouveaux info
    * @return session de reparations
    */
   static async updateSession(sessionReparations) {
@@ -78,7 +120,7 @@ class ReparationService {
       };
       let querySet = {};
       for (const [key, value] of Object.entries(sessionReparations)) {
-        if(key != '_id' && value != undefined) {
+        if(key != '_id' && value != undefined && value != []) {
           querySet[key] = value;
         }
       }
