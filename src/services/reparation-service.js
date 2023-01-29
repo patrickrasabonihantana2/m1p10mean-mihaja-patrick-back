@@ -142,11 +142,41 @@ class ReparationService {
 
   /**
    * recupere les reparations selon les criteres
+   * @param {ObjectId} session_reparation_id
    * @param {Reparation} reparation criteres
    * @return reparations
    */
-  static find(reparation) {
+  static async find(session_reparation_id, reparation) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let queryTemp = {};
+      for (const [key, value] of Object.entries(sessionReparations)) {
+        if(value != undefined && value !== []) {
+          queryTemp[key] = value;
+        }
+      }
+      let query = {
+        _id: session_reparation_id,
+        reparations: {
+          $elemMatch: queryTemp
+        }
+      }
+      console.log(query);
+
+      let sessionsReparations = await collection.find(query).toArray();
+      return sessionsReparations;
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**
@@ -154,17 +184,66 @@ class ReparationService {
    * @param {ObjectId} id
    * @return reparation
    */
-  static findById(id) {
+  static async findById(id) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let query = {
+        reparations: {
+          $elemMatch: {
+            _id: id
+          }
+        }
+      };
+
+      let reparations = await collection.find(query).toArray();
+      return reparations[0];
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**
    * ajoute une nouvelle reparation
+   * @param {ObjectId} session_reparation_id
    * @param {Reparation} reparation nouvellereparation
    * @return reparation
    */
-  static add(reparation) {
+  static async add(session_reparation_id, reparation) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let filter = {
+        _id: session_reparation_id
+      };
+      let query = {
+        $push: {
+          reparations: reparation
+        }
+      };
+      // console.log(query);
+
+      await collection.updateOne(filter, query);
+      return reparation;
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 
   /**
@@ -172,8 +251,56 @@ class ReparationService {
    * @param {Reparation} reparation reparation avec nouveaux info
    * @return reparation
    */
-  static update(reparation) {
+  static async update(reparation) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('session_reparations');
 
+      let options = {
+        projection: {
+          reparations: 0
+        }
+      };
+      let filter = {
+        reparations: {
+          $elemMatch: {
+            _id: reparation._id
+          }
+        }
+      };
+      let querySet = {};
+      for (const [key, value] of Object.entries(reparation)) {
+        if(key != '_id' && key != 'evolutions' && value != undefined && value != []) {
+          querySet[`reparations.$[element].${key}`] = value;
+        }
+      }
+      // let queryPush = {
+      //   evolutions: reparation[0]
+      // };
+      let query = {
+        $set: querySet,
+        arrayFilters: [
+          {
+            element: {_id: reparation._id}
+          }
+        ]
+      };
+      console.log(query);
+      // return query;
+      await collection.updateOne(filter, query);
+
+      let eparations = await collection.find(filter, options).toArray();
+      return eparations[0];
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
   }
 }
 

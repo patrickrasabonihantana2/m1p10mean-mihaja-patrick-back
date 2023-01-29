@@ -3,13 +3,28 @@ const {EtatReparation} = require('../../constantes');
 const Evolution = require('../evolution');
 
 class Reparation {
-  constructor(description, montant, etat = EtatReparation.CREE, _id = new ObjectId()) {
-    this.session_reparation_id = session_reparation_id;
-    this.description = description;
-    this.montant = montant;
-    this.etat = etat;
-    this.evolutions = [new Evolution(this.etat)];
-    this._id = _id;
+  description;
+  montant;
+  etat;
+  evolutions;
+
+  static newBlank(description, montant, etat, _id) {
+    let instance = new Reparation();
+    instance.description = description;
+    instance.montant = montant;
+    instance.etat = etat;
+    instance.evolutions = [new Evolution(instance.etat)];
+    instance._id = _id;
+    return instance;
+  }
+  static newCreate(description, montant, etat = EtatReparation.CREE, _id = new ObjectId()) {
+    let instance = new Reparation();
+    instance.description = description;
+    instance.montant = montant;
+    instance.etat = etat;
+    instance.evolutions = [new Evolution(instance.etat)];
+    instance._id = _id;
+    return instance;
   }
 }
 

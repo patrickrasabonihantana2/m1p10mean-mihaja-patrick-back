@@ -47,7 +47,7 @@ const collection = {
                   bsonType: 'string'
                 },
                 montant: {
-                  bsonType: 'double'
+                  bsonType: ['double', 'int']
                 },
                 etat: {
                   bsonType: 'int'
