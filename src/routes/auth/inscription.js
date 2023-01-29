@@ -9,10 +9,15 @@ router.post('/inscription', async function(req, res) {
   try {
     let utilisateur = new Utilisateur(body.nom, body.prenom, body.role, body.login);
     utilisateur = await UtilisateurService.inscription(utilisateur);
-    res.json(utilisateur);
+    let data = {
+      utilisateur: utilisateur
+    };
+    res.jsend.success(data);
   } catch(err) {
-    console.error(err);
-    res.status(400).json({message: err.message});
+    let data = {
+      message: err.message
+    };
+    res.status(400).jsend.fail(data);
   }
 });
 

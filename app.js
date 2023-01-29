@@ -20,12 +20,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(jsend.middleware);
 
+// CORS
+app.use(corsSecurity);
+
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/api', tokenSecurity, apiRouter);
 app.use('/collection', collectionRouter);
 
-// CORS
-app.use(corsSecurity);
 
 module.exports = app;

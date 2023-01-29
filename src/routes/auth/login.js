@@ -8,10 +8,12 @@ router.post('/login', async function(req, res, next) {
   try {
     let utilsateurLogin = new UtilisateurLogin(body.email, body.mdp);
     let data = await UtilisateurService.login(utilsateurLogin);
-    res.json(data);
+    res.jsend.success(data);
   } catch(err) {
-    console.error(err);
-    res.status(400).json({message: err.message});
+    let data = {
+      message: err.message
+    };
+    res.status(400).jsend.fail(data);
   }
 });
 
