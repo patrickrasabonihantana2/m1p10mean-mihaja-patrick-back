@@ -10,6 +10,7 @@ router.post('/login', async function(req, res, next) {
     let data = await UtilisateurService.login(utilsateurLogin);
     res.jsend.success(data);
   } catch(err) {
+    console.log(err);
     let data = {
       message: err.message
     };
