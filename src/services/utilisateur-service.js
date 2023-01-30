@@ -66,6 +66,39 @@ class UtilisateurService {
       }
     }
   }
+
+  /**
+   * recupere un utilisateur par l'ID
+   * @param {ObjectId} id
+   * @return voiture
+   */
+  static async findById(id) {
+    const mongoConnect = new MongoConnect();
+    let mongoClient = undefined;
+    try {
+      mongoClient = await mongoConnect.getConnection();
+      let db = mongoClient.db(Env.MONGO_DB);
+      let collection = db.collection('utilisateurs');
+
+      let query = {
+        _id: id
+      };
+      let options = {
+        projection: {
+          login: 0
+        }
+      };
+
+      let utilisateurs = await collection.find(query, options).toArray();
+      return utilisateurs[0];
+    } catch(err) {
+      throw err;
+    } finally {
+      if(mongoClient) {
+        await mongoClient.close();
+      }
+    }
+  }
 }
 
 module.exports = UtilisateurService;
